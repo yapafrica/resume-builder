@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+        .resume-builder {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 0px;
+            box-shadow: 0 0px 0px rgba(0, 0, 0, 0);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        fieldset {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        legend {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input, textarea {
+            width: calc(100% - 10px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .resume {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 0px;
+            box-shadow: 0 0px 0px rgba(0, 0, 0, 0);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            padding: 20px;
+            font-size: 2em;
+            margin: 0;
+            color: #333;
+        }
+        .header p {
+            font-size: 1em;
+            margin: 0;
+            color: #777;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .content {
+            margin-left: 10px;
+        }
+        .content p {
+            margin: 5px 0;
+        }
+        .content .entry {
+            margin-bottom: 10px;
+        }
+        .content .entry h4 {
+            margin: 0;
+            font-size: 1em;
+            color: #333;
+        }
+        .content .entry span {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .skill {
+            background: #d0d4d7;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        @media (max-width: 600px) {
+            /* Hide browser-specific print content */
+    	    body {
+               margin: 0;
+               padding: 0;
+    	    }
+	    .resume-builder {
+                width: 90%;
+                padding: 15px;
+            }
+            .resume {
+                width: 90%;
+		margin: 0;
+	        position: relative;
+                padding: 15px 20px;
+            }
+            .header h1 {
+                font-size: 1.5em;
+            }
+            .header p {
+                font-size: 0.9em;
+            }
+            .section-title {
+                font-size: 1em;
+            }
+	    .content .entry h4 {
+            font-size: 0.9em; /* Adjust font size for entries */
+            }
+            .skills {
+                flex-wrap: wrap;
+                gap: 5px; /* Reduce gap between skills */
+            }
+	     .skill {
+            font-size: 0.8em; /* Smaller font for skills */
+            }
+	     /* Disable the display of page number or any default header/footer elements */
+    	    @page {
+        	margin: 0;
+        	size: auto;
+    	    }
+
+    	     /* Hide specific content that browsers might include in the print view */
+    	     header, footer {
+        	display: none !important;
+    	    }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-builder">
+        <h1>Resume Builder</h1>
+        <form id="resumeForm">
+            <fieldset>
+                <legend>Personal Information</legend>
+                <label>Name: <input type="text" id="name" required></label>
+                <label>Email: <input type="email" id="email" required></label>
+                <label>Phone: <input type="text" id="phone" required></label>
+                <label>Address: <input type="text" id="address"></label>
+                <label>LinkedIn: <input type="url" id="linkedin"></label>
+            </fieldset>
+            <fieldset>
+                <legend>Professional Summary</legend>
+                <textarea id="summary" rows="4" required></textarea>
+            </fieldset>
+            <fieldset>
+                <legend>Education</legend>
+                <div id="educationInputs"></div>
+                <button type="button" onclick="addEducationInput()">Add Education</button>
+            </fieldset>
+            <fieldset>
+                <legend>Work Experience</legend>
+                <div id="experienceInputs"></div>
+                <button type="button" onclick="addExperienceInput()">Add Experience</button>
+            </fieldset>
+            <fieldset>
+                <legend>Skills</legend>
+                <input type="text" id="skills" placeholder="Enter skills, separated by commas">
+            </fieldset>
+            <fieldset>
+                <legend>Certifications</legend>
+                <div id="certificationInputs"></div>
+                <button type="button" onclick="addCertificationInput()">Add Certification</button>
+            </fieldset>
+            <button type="submit">Generate Resume</button>
+        </form>
+    </div>
+    <div class="resume" id="generatedResume" style="display:none;"></div>
+    <button id="printButton" style="display:none; margin: 20px auto; display: block;" onclick="printResume()">Save as PDF</button>
+    <script>
+        function addEducationInput() {
+            const container = document.getElementById('educationInputs');
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <label>Degree: <input type="text" class="degree" required></label>
+                <label>Institution: <input type="text" class="institution" required></label>
+                <label>Location: <input type="text" class="location"></label>
+                <label>Years: <input type="text" class="years"></label>
+            `;
+            container.appendChild(div);
+        }
+        function addExperienceInput() {
+            const container = document.getElementById('experienceInputs');
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <label>Job Title: <input type="text" class="jobTitle" required></label>
+                <label>Company: <input type="text" class="company" required></label>
+                <label>Location: <input type="text" class="workLocation"></label>
+                <label>Years: <input type="text" class="workYears"></label>
+                <textarea class="jobDescription" placeholder="Job description (use new lines for bullet points)"></textarea>
+            `;
+            container.appendChild(div);
+        }
+        function addCertificationInput() {
+            const container = document.getElementById('certificationInputs');
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <label>Certification: <input type="text" class="certification" required></label>
+                <label>Issuer: <input type="text" class="issuer"></label>
+                <label>Year: <input type="text" class="certYear"></label>
+            `;
+            container.appendChild(div);
+        }
+        function printResume() {
+            const printContent = document.getElementById('generatedResume').innerHTML;
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = `<div class="resume">${printContent}</div>`;
+            window.print();
+            document.body.innerHTML = originalContent;
+        }
+        document.getElementById('resumeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const resume = document.getElementById('generatedResume');
+            const printButton = document.getElementById('printButton');
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const linkedin = document.getElementById('linkedin').value;
+            const summary = document.getElementById('summary').value;
+            const education = Array.from(document.querySelectorAll('#educationInputs > div')).map(div => ({
+                degree: div.querySelector('.degree').value,
+                institution: div.querySelector('.institution').value,
+                location: div.querySelector('.location').value,
+                years: div.querySelector('.years').value,
+            }));
+            const experience = Array.from(document.querySelectorAll('#experienceInputs > div')).map(div => ({
+                jobTitle: div.querySelector('.jobTitle').value,
+                company: div.querySelector('.company').value,
+                location: div.querySelector('.workLocation').value,
+                years: div.querySelector('.workYears').value,
+                description: div.querySelector('.jobDescription').value.split('\n').filter(line => line.trim()),
+            }));
+            const skills = document.getElementById('skills').value.split(',').map(skill => skill.trim());
+            const certifications = Array.from(document.querySelectorAll('#certificationInputs > div')).map(div => ({
+                certification: div.querySelector('.certification').value,
+                issuer: div.querySelector('.issuer').value,
+                year: div.querySelector('.certYear').value,
+            }));
+            resume.style.display = 'block';
+            printButton.style.display = 'block';
+            resume.innerHTML = `
+                <div class="header">
+                    <h1>${name}</h1>
+                    <p>Email: ${email} | Phone: ${phone} | Address: ${address}</p>
+                    <p>LinkedIn: ${linkedin}</p>
+                </div>
+                <div class="section">
+                    <div class="section-title">Professional Summary</div>
+                    <div class="content">
+                        <p>${summary}</p>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Education</div>
+                    <div class="content">
+                        ${education.map(edu => `
+                            <div class="entry">
+                                <h4>${edu.degree}</h4>
+                                <span>${edu.institution}, ${edu.location} | ${edu.years}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Work Experience</div>
+                    <div class="content">
+                        ${experience.map(exp => `
+                            <div class="entry">
+                                <h4>${exp.jobTitle}</h4>
+                                <span>${exp.company}, ${exp.location} | ${exp.years}</span>
+                                <ul>
+                                    ${exp.description.map(item => `<li>${item}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Skills</div>
+                    <div class="content skills">
+                        ${skills.map(skill => `<div class="skill">${skill}</div>`).join('')}
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Certifications</div>
+                    <div class="content">
+                        ${certifications.map(cert => `
+                            <div class="entry">
+                                <h4>${cert.certification}</h4>
+                                <span>${cert.issuer} | ${cert.year}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
